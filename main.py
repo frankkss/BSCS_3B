@@ -57,7 +57,7 @@ def main():
         # Save Fibonacci sequence to a file
         with open('out.out','w') as file:
             for i in range (1, n + 1):
-                file.write(f"{fibonacci_recursive(i)}\n")
+                file.write(f"{fibonacci_recursive(i)}\n")()
     
     except ValueError:
         print("Error: Please enter a valid integer.")
