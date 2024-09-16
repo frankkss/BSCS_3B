@@ -28,31 +28,29 @@ class ShoppingCart:
 
 def main(): 
      
-    product1 = Product("laptop", 89000)
-    product2 = Product("Phone", 10000)
-    product3 = Product("Keyboard", 10000)
-    product4 = Product("Mouse", 50000)
-    product5 = Product("Laptop Bag", 200000)
+    # List of products to be added to the shopping cart 
+    products = [
+        Product("laptop", 89000),
+        Product("Phone", 10000),
+        Product("Keyboard", 10000),
+        Product("Mouse", 50000),
+        Product("Laptop Bag", 200000)
+    ]
 
+    # Initialize the shopping cart with a user balance
     cart = ShoppingCart(1005352, [])
 
-    cart.add_product(product2)
-    cart.add_product(product1)
-    cart.add_product(product3)
-    cart.add_product(product4)
-    cart.add_product(product5)
-
-    for product in cart.products:
+    # Add products to the shopping cart
+    for product in products:
+        cart.add_product(product)
         print(f"Added product: {product.name} - P{product.price}")
-    
+
+    # List products in the shopping cart
     cart.list_products()
 
-
-    cart.purchase_product(0)
-    cart.purchase_product(1)
-    cart.purchase_product(2)
-    cart.purchase_product(3)
-    cart.purchase_product(4)
+    # Purchase products in the shopping cart
+    for i in range(len(cart.products)):
+        cart.purchase_product(i)
 
 if __name__ == "__main__":
     main()
