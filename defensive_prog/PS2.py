@@ -28,7 +28,7 @@ class ShoppingCart:
 
 def main(): 
      
-    # List of products to be added to the shopping cart 
+    # Instantiate products
     products = [
         Product("laptop", 89000),
         Product("Phone", 10000),
