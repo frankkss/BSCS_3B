@@ -1,0 +1,5 @@
+cd directory of asm
+
+nasm -f win32 file.asm
+gcc file.obj 
+a.exe
