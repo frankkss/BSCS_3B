@@ -50,7 +50,7 @@ class ISS_Lab:
     # Backup data
     def backup_data(self):
         self.backup = self.data
-        return "Data backep up successfully"
+        return "Data backup up successfully"
     
     # Restore data
     def restore_data(self):
