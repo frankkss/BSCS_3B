@@ -6,23 +6,29 @@ section .data
     pro5 db '[2] Subtract', 10, 0 
     pro6 db '[3] Multiply', 10, 0
     pro7 db '[4] Divide', 10, 0 
+    pro8 db "Thank you!",10, 0
     ;error handeling:
     err db 'Please enter numbers (1-5)', 10, 0
-    err2 db 'Please enter (-99 to 99) onlly', 10, 0
+    err2 db 'Input should only be between -99 to 99. Please enter again a valid input.', 10, 0
+    ;title
+    ti db "==== ADDITION ====", 10, 0
+    ti2 db "==== SUBTRACTION ====", 10, 0
+    ti3 db "==== MULTIPLICATION ====", 10, 0
+    ti4 db "==== DIVISION ====",10, 0
     ;useer input
-    prompt1 db 'Enter your first number', 10, 0
-    prompt2 db 'Enter your second number', 10,0
-    prompt3 db 'Enter your 1-4', 10,0
+    prompt1 db 'Enter your first number: ', 0
+    prompt2 db 'Enter your second number: ',0
+    prompt3 db "Enter Choice: ",0
     choice_input db '%d', 0
     num1_input db '%d', 0
     num2_input db '%d', 0
     ;Opperation
-    sum db "sum = %d", 10, 0
-    diff db "difference = %d", 10 ,0
-    prod db "product = %d", 10, 0
-    quo db "qoutient = ", 10, 0
+    sum db "Sum: %d",10, 0
+    diff db "Difference: %d",10 ,0
+    prod db "Product: %d",10, 0
+    quo db "Qoutient: ", 0
     out_div db "%s%i", 10,"%s%i", 10, 0
-    rem db "remainder: ", 10 , 0
+    rem db "Remainder: ", 0
 section .bss
     num1 resb 100 
     num2 resb 100
@@ -59,14 +65,17 @@ main_loop:
     call _printf
     add esp, 4
 
+
     push prompt3
     call _printf
     add esp, 4
+
 
     push choice
     push choice_input
     call _scanf
     add esp, 4
+
 
     mov eax, [choice]
     cmp eax, 0
@@ -87,17 +96,20 @@ errormain:
     add esp, 4
     jmp main_loop
 
+
 error_add:
     push err2
     call _printf
     add esp, 4
     jmp addi
 
+
 error_sub:
     push err2
     call _printf
     add esp, 4
     jmp subt
+
 
 error_mul:
     push err2
@@ -110,6 +122,9 @@ error_div:
     add esp, 4
     jmp divi
 addi:
+    push ti
+    call _printf
+    add esp, 4
     push prompt1
     call _printf
     add esp, 4
@@ -125,9 +140,12 @@ addi:
     add esp, 4
 
 
+
+
     push prompt2
     call _printf
     add esp, 4
+
 
     push num2
     push num2_input
@@ -139,6 +157,9 @@ addi:
     jl error_add
     add esp,4
     
+
+
+
 
 
 
@@ -151,9 +172,16 @@ addi:
     add esp,8
     jmp main_loop
 
+
     
 
+
 subt:
+    push ti2
+    call _printf
+    add esp, 4
+
+
     push prompt1
     call _printf
     add esp, 4
@@ -168,9 +196,11 @@ subt:
     jl error_sub
     add esp, 4
 
+
     push prompt2
     call _printf
     add esp, 4
+
 
     push num2
     push num2_input
@@ -182,8 +212,10 @@ subt:
     jl error_sub
     add esp,4
 
+
     mov eax, [num1]
     sub eax, [num2]
+
 
     push eax
     push diff
@@ -191,7 +223,13 @@ subt:
     add esp,8
     jmp main_loop
 
+
 multi:
+    push ti3
+    call _printf
+    add esp, 4
+
+
     push prompt1
     call _printf
     add esp, 4
@@ -206,9 +244,11 @@ multi:
     jl error_mul
     add esp, 8
 
+
     push prompt2
     call _printf
     add esp, 4
+
 
     push num2
     push num2_input
@@ -220,8 +260,10 @@ multi:
     jl error_mul
     add esp,8
 
+
     mov eax, [num1]
     mov ebx, [num2]
+
 
     mul ebx 
     push eax 
@@ -230,7 +272,13 @@ multi:
     add esp, 8
     jmp main_loop
 
+
 divi: 
+    push ti3
+    call _printf
+    add esp, 4
+
+
     push prompt1
     call _printf
     add esp, 4
@@ -245,9 +293,11 @@ divi:
     jl error_div
     add esp, 8
 
+
     push prompt2
     call _printf
     add esp, 4
+
 
     push num2
     push num2_input
@@ -259,11 +309,14 @@ divi:
     jl error_div
     add esp,8
 
+
     mov eax, [num1]
     mov ebx, [num2]  
     mov edx, 0
 
+
     div ebx 
+
 
     push edx
     push rem
@@ -274,4 +327,8 @@ divi:
     add esp, 20
     jmp main_loop
 exit:
+    push pro8
+    call _printf
+    add esp, 4
     ret
+
