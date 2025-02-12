@@ -1,0 +1,48 @@
+
+
+def encrypt_decrypt(text, shift_keys, ifdecrypt):
+    """
+    Encrypts a text using Caesar Cipher with a list of shift keys.
+    Args:
+        text: The text to encrypt.
+        shift_keys: A list of integers representing the shift values for each character.
+        ifdecrypt: flag if decrypt or encrypt
+    Returns:
+        A string containing the encrypted text if encrypt and plain text if decrypt
+    """
+    result = []
+    shift_length = len(shift_keys)
+    
+    for i, char in enumerate(text):
+        shift = shift_keys[i % shift_length]
+        if ifdecrypt:
+            new_char = chr(((ord(char) - 32 - shift) % 94) + 32)
+        else:
+            new_char = chr(((ord(char) - 32 + shift) % 94) + 32)
+        
+        new_ascii = ord(char) + shift 
+        
+        
+        print (i, char, shift, new_char)
+        result.append(new_char)
+        
+    return ''.join(result)
+    
+
+# Example usage
+if __name__=="__main__":
+    text = input()
+    shift_keys = list(map(int, input().split()))
+
+
+cipher_text = encrypt_decrypt(text, shift_keys, False)
+print("-" * 10)
+
+
+decrypted_text = encrypt_decrypt(cipher_text, shift_keys, True)
+print("-" * 10)
+
+print("Text:", text)
+print("Shift keys:", " ".join(map(str,shift_keys)))
+print("Cipher:", cipher_text)
+print("Decrypted text:", decrypted_text)
