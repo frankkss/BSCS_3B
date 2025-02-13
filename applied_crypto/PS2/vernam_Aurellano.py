@@ -2,42 +2,30 @@
 import random
 
 def text_to_decimal(text: str) -> str:
-    """Convert text to 3-digit decimal ASCII values with leading zeros"""
-    ascii_array = []
-    for char in text:
-        ascii_array.append(str(ord(char)).zfill(3))
-    return "".join(ascii_array)
+    """Convert text to a string of 3-digit decimal ASCII values with leading zeros"""
+    return ''.join(str(ord(char)).zfill(3) for char in text)
 
 def decimal_to_text(decimal_str: str) -> str:
-    """Convert 3-digit decimal string back to text"""
-    char_array = []
-    for i in range(0, len(decimal_str), 3):
-        char_array.append(chr(int(decimal_str[i:i+3])))
-    return ''.join(char_array)
+    """Convert a string of 3-digit decimal ASCII values back to text"""
+    return ''.join(chr(int(decimal_str[i:i+3])) for i in range(0, len(decimal_str), 3))
 
 def generate_key(length: int) -> str:
-    """Generate random numeric key of specified length"""
-    return "".join([str(random.randrange(0, 9)) for _ in range(length)])
+    """Generate a random numeric key of the specified length"""
+    return ''.join(str(random.randint(0, 9)) for _ in range(length))
 
 def vernam_encrypt(plaintext_dec: str, key_dec: str) -> str:
-    """Encrypt decimal plaintext using Vernam cipher"""
+    """Encrypt decimal plaintext using the Vernam cipher"""
     if len(plaintext_dec) != len(key_dec):
         raise ValueError("Key length must match the length of the plaintext")
-    encrypted_array = []
-    for pd, kd in zip(plaintext_dec, key_dec):
-        res = int(pd) + int(kd)
-        encrypted_array.append(str(res % 10))
-    return "".join(encrypted_array)
+    encrypted_array = [str((int(p) - int(k)) % 10) for p, k in zip(plaintext_dec, key_dec)]
+    return ''.join(encrypted_array)
 
 def vernam_decrypt(ciphertext_dec: str, key_dec: str) -> str:
-    """Decrypt decimal ciphertext using Vernam cipher"""
+    """Decrypt decimal ciphertext using the Vernam cipher"""
     if len(ciphertext_dec) != len(key_dec):
         raise ValueError("Key length must match the length of the ciphertext")
-    decrypted_array = []
-    for cd, kd in zip(ciphertext_dec, key_dec):
-        res = int(cd) - int(kd)
-        decrypted_array.append(str(res % 10))
-    return "".join(decrypted_array)
+    decrypted_array = [str((int(c) + int(k)) % 10) for c, k in zip(ciphertext_dec, key_dec)]
+    return ''.join(decrypted_array)
 
 plaintext = "HELLO WORLD"
 
