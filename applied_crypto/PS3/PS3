@@ -1,7 +1,7 @@
 def validate_alphabet(alphabet: str) -> None:
     """Validate alphabet requirements"""
-    if len(alphabet) < 1:
-        raise ValueError("Alphabet must contain at least 1 character")
+    if not alphabet or alphabet.isspace():
+        raise ValueError("Alphabet cannot be empty")
     if len(set(alphabet)) != len(alphabet):
         raise ValueError("Alphabet must contain unique characters")
 
@@ -18,13 +18,17 @@ def vigenere_cipher(text: str, key: str, alphabet: str, mode: str = 'encrypt', v
         key: Key containing only alphabet characters
         alphabet: Unique characters defining character order
         mode: 'encrypt' or 'decrypt' (default: 'encrypt')
-        verbose: Show processing details (default: False)
+        verbose: Show processing details (default: True)
 
     Returns:
         Processed text string
     """
     # Validate inputs
     validate_alphabet(alphabet)
+    
+    # Check for empty text
+    if not text or text.isspace():
+        raise ValueError("Plaintext cannot be empty")
     
     # Check for empty key
     if not key:
@@ -34,18 +38,33 @@ def vigenere_cipher(text: str, key: str, alphabet: str, mode: str = 'encrypt', v
     if any(c.isspace() for c in key):
         raise ValueError("Key cannot contain spaces")
         
-    # Check for invalid characters in key
-    invalid_key_chars = find_invalid_chars(key, alphabet)
-    if invalid_key_chars:
-        chars = ''.join(sorted(invalid_key_chars))
-        raise ValueError(f"Invalid characters!\nin key: {chars}\nis not in alphabet")
-    
-    # Check for invalid characters in text
+    # Check for invalid characters in both text and key
     invalid_text_chars = find_invalid_chars(text, alphabet)
-    if invalid_text_chars:
-        chars = ''.join(sorted(invalid_text_chars))
-        raise ValueError(f"Invalid characters!\nin text: {chars}\nis not in alphabet")
+    invalid_key_chars = find_invalid_chars(key, alphabet)
     
+    # Simple error message construction
+    error_message = []
+    
+    if invalid_text_chars:
+        # Sort and join invalid characters with commas
+        bad_chars = sorted(invalid_text_chars)
+        bad_chars = ', '.join(bad_chars)
+        error_message.append(f"in plaintext: {bad_chars}")
+        
+    if invalid_key_chars:
+        # Sort and join invalid characters with commas
+        bad_chars = sorted(invalid_key_chars)
+        bad_chars = ', '.join(bad_chars)
+        error_message.append(f"in key: {bad_chars}")
+        
+    # If we found any invalid characters, raise error
+    if error_message:
+        # Build the complete error message
+        full_error = "Invalid characters!\n"
+        full_error += "\n".join(error_message)
+        full_error += "\nare not in alphabet"
+        raise ValueError(full_error)
+
     result = []
     key_index = 0
     alphabet_length = len(alphabet)
@@ -56,7 +75,7 @@ def vigenere_cipher(text: str, key: str, alphabet: str, mode: str = 'encrypt', v
             result.append(char)
             continue
             
-        key_char = key[key_index % key_length]  # Use modulo for key cycling
+        key_char = key[key_index % key_length]
         key_index += 1
         
         char_val = alphabet.index(char)
@@ -69,7 +88,8 @@ def vigenere_cipher(text: str, key: str, alphabet: str, mode: str = 'encrypt', v
             
         new_char = alphabet[new_val]
         
-        if verbose:
+        # Always show steps for numeric alphabets
+        if verbose or alphabet.isdigit():
             print(f"{char} ({char_val}) {mode} with {key_char} ({key_val}) -> {new_char} ({new_val})")
             
         result.append(new_char)
