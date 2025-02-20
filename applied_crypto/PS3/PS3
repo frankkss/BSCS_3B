@@ -37,12 +37,14 @@ def vigenere_cipher(text: str, key: str, alphabet: str, mode: str = 'encrypt', v
     # Check for invalid characters in key
     invalid_key_chars = find_invalid_chars(key, alphabet)
     if invalid_key_chars:
-        raise ValueError(f"Invalid characters in key: {sorted(invalid_key_chars)} not in alphabet")
+        chars = ''.join(sorted(invalid_key_chars))
+        raise ValueError(f"Invalid characters!\nin key: {chars}\nis not in alphabet")
     
     # Check for invalid characters in text
     invalid_text_chars = find_invalid_chars(text, alphabet)
     if invalid_text_chars:
-        raise ValueError(f"Invalid characters in text: {sorted(invalid_text_chars)} not in alphabet")
+        chars = ''.join(sorted(invalid_text_chars))
+        raise ValueError(f"Invalid characters!\nin text: {chars}\nis not in alphabet")
     
     result = []
     key_index = 0
@@ -85,7 +87,7 @@ if __name__ == "__main__":
         verbose = True if not verbose_input else verbose_input.lower() == 'true'
 
         result = vigenere_cipher(text, key, alphabet, mode, verbose)
-        print("Encrypted result:", result)  # Remove newline
+        print(f"{mode.capitalize()}ed result: {result}")  # Mode-specific output
     except ValueError as e:
         print(f"Error: {e}")
 
