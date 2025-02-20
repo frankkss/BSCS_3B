@@ -1,0 +1,118 @@
+def validate_alphabet(alphabet: str) -> None:
+    """Validate alphabet requirements"""
+    if len(alphabet) < 1:
+        raise ValueError("Alphabet must contain at least 1 character")
+    if len(set(alphabet)) != len(alphabet):
+        raise ValueError("Alphabet must contain unique characters")
+
+def find_invalid_chars(text: str, alphabet: str) -> set:
+    """Find characters in text that are not in alphabet"""
+    return {c for c in text if not c.isspace() and c not in alphabet}
+
+def vigenere_cipher(text: str, key: str, alphabet: str, mode: str = 'encrypt', verbose: bool = True) -> str:
+    """
+    Encrypts/decrypts text using a Vigenere cipher with custom alphabet.
+    
+    Args:
+        text: Input text to process (plaintext or ciphertext)
+        key: Key containing only alphabet characters
+        alphabet: Unique characters defining character order
+        mode: 'encrypt' or 'decrypt' (default: 'encrypt')
+        verbose: Show processing details (default: False)
+
+    Returns:
+        Processed text string
+    """
+    # Validate inputs
+    validate_alphabet(alphabet)
+    
+    # Check for empty key
+    if not key:
+        raise ValueError("Key cannot be empty")
+    
+    # Check for spaces in key
+    if any(c.isspace() for c in key):
+        raise ValueError("Key cannot contain spaces")
+        
+    # Check for invalid characters in key
+    invalid_key_chars = find_invalid_chars(key, alphabet)
+    if invalid_key_chars:
+        raise ValueError(f"Invalid characters in key: {sorted(invalid_key_chars)} not in alphabet")
+    
+    # Check for invalid characters in text
+    invalid_text_chars = find_invalid_chars(text, alphabet)
+    if invalid_text_chars:
+        raise ValueError(f"Invalid characters in text: {sorted(invalid_text_chars)} not in alphabet")
+    
+    result = []
+    key_index = 0
+    alphabet_length = len(alphabet)
+    key_length = len(key)
+
+    for char in text:
+        if char.isspace():
+            result.append(char)
+            continue
+            
+        key_char = key[key_index % key_length]  # Use modulo for key cycling
+        key_index += 1
+        
+        char_val = alphabet.index(char)
+        key_val = alphabet.index(key_char)
+        
+        if mode == 'decrypt':
+            new_val = (char_val - key_val) % alphabet_length
+        else:
+            new_val = (char_val + key_val) % alphabet_length
+            
+        new_char = alphabet[new_val]
+        
+        if verbose:
+            print(f"{char} ({char_val}) {mode} with {key_char} ({key_val}) -> {new_char} ({new_val})")
+            
+        result.append(new_char)
+
+    return ''.join(result)
+
+# Example usage
+if __name__ == "__main__":
+    try:
+        alphabet = input("Enter alphabet: ")
+        mode = input("Enter mode (encrypt/decrypt): ")
+        text = input("Enter text: ")
+        key = input("Enter key: ")
+        verbose = input("Show steps? (True/False): ").lower() == 'true'
+
+        result = vigenere_cipher(text, key, alphabet, mode, verbose)
+        print(f"\n{mode.capitalize()}ed result:", result)
+    except ValueError as e:
+        print(f"Error: {e}")
+
+"""
+Sample Input/Output:
+
+Input:
+ABCDEFGHIJKLMNOPQRSTUVWXYZ
+encrypt
+ATTACK AT DAWN
+LEMON
+True
+
+Output:
+
+A (0) encrypt with L (11) -> L (11)
+T (19) encrypt with E (4) -> X (23)
+T (19) encrypt with M (12) -> F (5)
+A (0) encrypt with O (14) -> O (14)
+C (2) encrypt with N (13) -> P (15)
+K (10) encrypt with L (11) -> V (21)
+A (0) encrypt with E (4) -> E (4)
+T (19) encrypt with M (12) -> F (5)
+D (3) encrypt with O (14) -> R (17)
+A (0) encrypt with N (13) -> N (13)
+W (22) encrypt with L (11) -> H (7)
+N (13) encrypt with E (4) -> R (17)
+
+Encrypted result: LXFOPV EF RNHR
+
+"""
