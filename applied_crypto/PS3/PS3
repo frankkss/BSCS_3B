@@ -77,14 +77,15 @@ def vigenere_cipher(text: str, key: str, alphabet: str, mode: str = 'encrypt', v
 # Example usage
 if __name__ == "__main__":
     try:
-        alphabet = input("Enter alphabet: ")
-        mode = input("Enter mode (encrypt/decrypt): ")
-        text = input("Enter text: ")
-        key = input("Enter key: ")
-        verbose = input("Show steps? (True/False): ").lower() == 'true'
+        alphabet = input()
+        mode = input() or 'encrypt'  # Default to 'encrypt' if empty
+        text = input()
+        key = input()
+        verbose_input = input()
+        verbose = True if not verbose_input else verbose_input.lower() == 'true'
 
         result = vigenere_cipher(text, key, alphabet, mode, verbose)
-        print(f"\n{mode.capitalize()}ed result:", result)
+        print("Encrypted result:", result)  # Remove newline
     except ValueError as e:
         print(f"Error: {e}")
 
