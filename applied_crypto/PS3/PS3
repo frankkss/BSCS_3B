@@ -46,21 +46,18 @@ def vigenere_cipher(text: str, key: str, alphabet: str, mode: str = 'encrypt', v
     error_message = []
     
     if invalid_text_chars:
-        bad_chars = ', '.join(sorted(invalid_text_chars))  # Add comma and space between chars
-        error_message.append(f"in plaintext: {bad_chars}")
+        bad_chars = ', '.join(sorted(invalid_text_chars))
+        suffix = "is" if len(invalid_text_chars) == 1 else "are"
+        error_message.append(f"in plaintext: {bad_chars}\n{suffix} not in alphabet")
         
     if invalid_key_chars:
-        bad_chars = ', '.join(sorted(invalid_key_chars))  # Add comma and space between chars
-        error_message.append(f"in key: {bad_chars}")
+        bad_chars = ', '.join(sorted(invalid_key_chars))
+        suffix = "is" if len(invalid_key_chars) == 1 else "are"
+        error_message.append(f"in key: {bad_chars}\n{suffix} not in alphabet")
         
     # If we found any invalid characters, raise error
     if error_message:
-        # Build the complete error message
-        full_error = "Invalid characters!\n"
-        full_error += "\n".join(error_message)
-        # Use "is" for single character, "are" for multiple
-        total_invalid = len(invalid_text_chars) + len(invalid_key_chars)
-        full_error += "\nis not in alphabet" if total_invalid == 1 else "\nare not in alphabet"
+        full_error = "Invalid characters!\n" + "\n".join(error_message)
         raise ValueError(full_error)
 
     result = []
