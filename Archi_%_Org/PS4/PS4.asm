@@ -164,7 +164,7 @@ addi:
 
 
     mov eax, [num1]
-    add eax, [num2]
+    and eax, [num2]
     
     push eax
     push sum
@@ -214,7 +214,7 @@ subt:
 
 
     mov eax, [num1]
-    sub eax, [num2]
+    xor eax, [num2]
 
 
     push eax

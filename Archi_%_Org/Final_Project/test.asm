@@ -6,84 +6,87 @@
 ;   · Left shift an integer
 
 section .data
-    display0 db "|=======================================================================|", 10, \
-                "|           B I T W I S E  O P E R A T I O N  T O O L S                 |", 10, \
-                "|=======================================================================|", 10, \
-                "|           [1] AND Operation Tool                                      |", 10, \
-                "|           [2] OR Operation Tool                                       |", 10, \
-                "|           [3] XOR Operation Tool                                      |", 10, \
-                "|           [4] LEFT SHIFT Operation Tool                               |", 10, \
-                "|           [5] Exit                                                    |", 10, \
-                "|=======================================================================|", 10, 0
-    ;User Input
-    prompt1  db "|           Please select an option in the box above: ", 0
-    display9 db "|=======================================================================|", 10, 0
-
-    num_format db "%d", 0
-    ;Error Handling
-    errorMessage db "|===========Invalid choice. Please try again.===========================|", 10, 0
-
+    pro1 db "|===================================================================================|", 10, \
+            '|  Hi! This is Group 8 and this program will help you to perform Bitwise.           |', 10, \
+            "|===================================================================================|", 10, 0
+    pro2 db "|===================================================================================|", 10, \
+            "|                    B I T W I S E  O P E R A T I O N  T O O L S                    |", 10, \
+            "|===================================================================================|", 10, \
+            "|     [1] AND Operation Tool                                                        |", 10, \
+            "|     [2] OR Operation Tool                                                         |", 10, \
+            "|     [3] XOR Operation Tool                                                        |", 10, \
+            "|     [4] LEFT SHIFT Operation Tool                                                 |", 10, \
+            "|     [5] Exit                                                                      |", 10, \
+            "|===================================================================================|", 10, \
+            "|===================================================================================|", 10, 0
+    pro8 db "|===================================================================================|", 10, \
+            "|                          Thank you for using our program!                         |", 10, \
+            "|===================================================================================|", 10, 0
+    ;Error Handling:
+    err1 db "|     Invalid choice. Please enter only numbers (1-5)                               |", 10, 0
+    err2 db '|     Input should only be between -1000 to 1000. Please enter again a valid input. |', 10, 0
+    err3 db '|     You can not shift by more bits than 16-bits.                                  |', 10, 0
+    err4 db '|     You can not shift by negative bits.                                           |', 10, 0
     ;Title
-    title1 db   "|=======================================================================|", 10, \
-                "|           A N D  O P E R A T I O N  T O O L                           |", 10, \
-                "|=======================================================================|", 10, 0
-    title2 db   "|=======================================================================|", 10, \
-                "|           O R  O P E R A T I O N  T O O L                             |", 10, \
-                "|=======================================================================|", 10, 0
-    title3 db   "|=======================================================================|", 10, \
-                "|           X O R  O P E R A T I O N  T O O L                           |", 10, \
-                "|=======================================================================|", 10, 0
-    title4 db   "|=======================================================================|", 10, \
-                "|           L E F T  S H I F T  O P E R A T I O N  T O O L              |", 10, \
-                "|=======================================================================|", 10, 0
-
-    ;prompts
-    prompt2 db "|           Enter the first number: ", 0
-    prompt3 db "|           Enter the second number: ", 0
-    prompt4 db "|           Enter the number of bits to shift: ", 0
-    invalid_input_msg DB "Invalid input. Please enter a valid choice ('Y' or 'N' only)", 10, 0
-    continue_prompt db "|           Do you want to continue? (y/n): ", 0
-
-    ;Result
-    result db "|           Result: ", 0
-
-    ;thank You message
-    thankYou db "|=======================================================================|", 10, \
-                "|========== Thank you for using the tool! ==============================|", 10, \
-                "|=======================================================================|", 10, 0
-    
-
+    ti1 db  "|===================================================================================|", 10, \
+            "|                         A N D  O P E R A T I O N  T O O L                         |", 10, \
+            "|===================================================================================|", 10, 0
+    ti2 db  "|===================================================================================|", 10, \
+            "|                          O R  O P E R A T I O N  T O O L                          |", 10, \
+            "|===================================================================================|", 10, 0
+    ti3 db  "|===================================================================================|", 10, \
+            "|                         X O R  O P E R A T I O N  T O O L                         |", 10, \
+            "|===================================================================================|", 10, 0
+    ti4 db  "|===================================================================================|", 10, \
+            "|          L E F T  S H I F T  O P E R A T I O N  T O O L  ( 1 6 - b i t)           |", 10, \
+            "|===================================================================================|", 10, 0
+    ;User Input
+    prompt1 db "|     Enter the first number: ", 0
+    prompt2 db "|     Enter the second number: ", 0
+    prompt3 db "|     Please select an option in the box above: ", 0
+    prompt4 db "|     Enter the number of bits to shift: ", 0
+    choice_input db '%d', 0
+    num1_input db '%d', 0
+    num2_input db '%d', 0
+    ;Bitwise Operations
+    andRes db  "|     AND Result: %d",10, 0
+    orRes db   "|     OR Result: %d",10 ,0
+    xorRes db  "|     XOR Result: %d",10, 0
+    lsRes db   "|     LEFT SHIFT Result: %d",10, 0
 
 section .bss
-    choice resd 1
-    str: resb 50
-    results resb 1
-    continue resb 2
-
+    num1 resb 100 
+    num2 resb 100
+    choice resb 1
+    val1 resw 1
+    val2 resw 1
+    userinput resb 100
+    result_v resw 1
 section .text
-    extern _printf, _scanf, _exit
     global _main
-
+    extern _printf
+    extern _scanf
 _main:
-    ; Print introduction message
-    push display0
+    push pro1
+    call _printf
+    add esp, 4
+main_loop:
+    push pro2
     call _printf
     add esp, 4
 
-loop_start:
 
-    ; Prompt for choice
-    push prompt1
+    push prompt3
     call _printf
     add esp, 4
 
-    ; Read choice
+
     push choice
-    push num_format
+    push choice_input
     call _scanf
-    add esp, 8
+    add esp, 4
 
-    ; Check choice and jump to corresponding section
+
     mov eax, [choice]
     cmp eax, 1
     je and_operation
@@ -92,233 +95,252 @@ loop_start:
     cmp eax, 3
     je xor_operation
     cmp eax, 4
-    je left_shift
+    je left_shift_operation
     cmp eax, 5
-    je exit_program
-    jmp invalid_choice
+    je exit
+    cmp eax, 6
+    jg errormain
+
+    
+errormain:
+    push err1
+    call _printf
+    add esp, 4
+    jmp main_loop
+
+
+error_and:
+    push err2
+    call _printf
+    add esp, 4
+    jmp and_operation
+
+
+error_or:
+    push err2
+    call _printf
+    add esp, 4
+    jmp or_operation
+
+
+error_xor:
+    push err2
+    call _printf
+    add esp, 4
+    jmp xor_operation
+error_ls1:
+    push err2
+    call _printf
+    add esp, 4
+    jmp left_shift_operation
+
+error_ls2:
+    push err3
+    call _printf
+    add esp, 4
+    jmp left_shift_operation
+
+error_ls3:
+    push err4
+    call _printf
+    add esp, 4
+    jmp left_shift_operation
 
 
 and_operation:
-    ; Print AND operation title
-    push display9
-    push title1
+    push ti1
     call _printf
-    add esp, 8
+    add esp, 4
+    push prompt1
+    call _printf
+    add esp, 4
+    
+    push num1 
+    push num1_input
+    call _scanf
+    mov eax, [num1]
+    cmp eax, 1000
+    jg error_and
+    cmp eax, -1000
+    jl error_and
+    add esp, 4
 
-    ; Prompt for first number
-    push display9
     push prompt2
     call _printf
-    add esp, 8
+    add esp, 4
 
-    ; Read first number
-    push str
-    push num_format
+    push num2
+    push num2_input
     call _scanf
-    add esp, 8
-
-    ; Prompt for second number
-    push display9
-    push prompt3
-    call _printf
-    add esp, 8
-
-    ; Read second number
-    push str
-    push num_format
-    call _scanf
-    add esp, 8
-
-    ; Perform AND operation on the two numbers
-    mov eax, [str]
-    mov ebx, [str+4]
-    and eax, ebx
-    mov [result], eax
+    mov eax, [num2]
+    cmp eax, 1000
+    jg error_and
+    cmp eax, -1000
+    jl error_and
+    add esp,4
     
 
-
-    ; Print result
-    push display9
-    push result 
+    mov eax, [num1]
+    and eax, [num2]
+    
     push eax
+    push andRes
     call _printf
-    add esp, 12
-    
-    ; ask user if they want to continue
+    add esp,8
+    jmp main_loop
+
+
 
 
 or_operation:
-    ; Print OR operation title
-    push display9
-    push title2
-    call _printf
-    add esp, 8
-
-    ; Prompt for first number
-    push display9
-    push prompt2
-    call _printf
-    add esp, 8
-
-    ; Read first number
-    push str
-    push num_format
-    call _scanf
-    add esp, 8
-
-    ; Prompt for second number
-    push display9
-    push prompt3
-    call _printf
-    add esp, 8
-
-    ; Read second number
-    push str
-    push num_format
-    call _scanf
-    add esp, 8
-
-    ; Perform OR operation
-    mov    al, 5             ;getting 5 in the al
-    mov    bl, 3             ;getting 3 in the bl
-    or     al, bl            ;or al and bl registers, result should be 7
-    add    al, byte '0'      ;converting decimal to ascii
-
-    mov    [results],  al ; store the result
-    mov    eax, 4 ; system call for sys_write
-    mov    ebx, 1 ; file descriptor (stdout)
-    mov    ecx, results ; address of the string
-    mov    edx, 1  ; length of the string
-    int    0x80 ; call kernel
-
-
-    ;print result
-    push display9
-    push results
+    push ti2
     call _printf
     add esp, 4
-    jmp _main
+
+
+    push prompt1
+    call _printf
+    add esp, 4
+    
+    push num1 
+    push num1_input
+    call _scanf
+    mov eax, [num1]
+    cmp eax, 1000
+    jg error_or
+    cmp eax, -1000
+    jl error_or
+    add esp, 4
+
+
+    push prompt2
+    call _printf
+    add esp, 4
+
+
+    push num2
+    push num2_input
+    call _scanf
+    mov eax, [num2]
+    cmp eax, 1000
+    jg error_or
+    cmp eax, -1000
+    jl error_or
+    add esp,4
+
+
+    mov eax, [num1]
+    or eax, [num2]
+
+
+    push eax
+    push orRes
+    call _printf
+    add esp,8
+    jmp main_loop
 
 
 xor_operation:
-    ; Print XOR operation title
-    push display9
-    push title3
+    push ti3
     call _printf
+    add esp, 4
+
+
+    push prompt1
+    call _printf
+    add esp, 4
+    
+    push num1 
+    push num1_input
+    call _scanf
+    mov eax, [num1]
+    cmp eax, 1000
+    jg error_xor
+    cmp eax, -1000
+    jl error_xor
     add esp, 8
 
-    ; Prompt for first number
-    push display9
+
     push prompt2
     call _printf
-    add esp, 8
+    add esp, 4
 
-    ; Read first number
-    push str
-    push num_format
+
+    push num2
+    push num2_input
     call _scanf
-    add esp, 8
+    mov eax, [num2]
+    cmp eax, 1000
+    jg error_xor
+    cmp eax, -1000
+    jl error_xor
+    add esp,8
 
-    ; Prompt for second number
-    push display9
-    push prompt3
+
+    mov eax, [num1]
+    xor eax, [num2]
+
+
+    push eax 
+    push xorRes 
     call _printf
     add esp, 8
+    jmp main_loop
 
-    ; Read second number
-    push str
-    push num_format
-    call _scanf
-    add esp, 8
 
-    ; Perform XOR operation
-    mov eax, [str]
-    mov ebx, [str+4]
-    xor eax, ebx
-
-left_shift:
-    ; Print LEFT SHIFT operation title
-    push display9
-    push title4
+left_shift_operation: 
+    push ti4
     call _printf
-    add esp, 8
+    add esp, 4
 
-    ; Prompt for number
-    push display9
-    push prompt2
+
+    push prompt1
     call _printf
-    add esp, 8
-
-    ; Read number
-    push str
-    push num_format
+    add esp, 4
+    
+    push num1 
+    push num1_input
     call _scanf
+    mov eax, [num1]
+    cmp eax, 1000
+    jg error_ls1
+    cmp eax, -1000
+    jl error_ls1
     add esp, 8
 
-    ; Prompt for number of bits to shift
-    push display9
+
     push prompt4
     call _printf
-    add esp, 8
+    add esp, 4
 
-    ; Read number of bits to shift
-    push str
-    push num_format
+
+    push num2
+    push num2_input
     call _scanf
-    add esp, 8
+    mov eax, [num2]
+    cmp eax, 16
+    jg error_ls2
+    cmp eax, 0
+    jl error_ls3
+    add esp,8
 
-    ; Perform left shift operation
-    mov eax, [str]
-    mov cl, [str+4]
+
+    mov eax, [num1]
+    mov cl, [num2]
     shl eax, cl
 
-    ; Print result
-    push display9
-    push result
     push eax
+    push lsRes
     call _printf
-    add esp, 12
-    jmp _main
+    add esp, 8
+    jmp main_loop
 
 
 
 
-
-continue_loop:
-    CMP byte [continue], 'y'
-    JE loop_start
-    CMP byte [continue], 'Y'
-    JE  loop_start
-    CMP byte [continue], 'n'
-    JE exit_program
-    CMP byte [continue], 'N'
-    JE exit_program
-
-    call error_str
-    JMP continue_loop
-
-
-error_str:                   ; Display an error message if invalid input is entered by the user
-    push invalid_input_msg
+exit:
+    push pro8
     call _printf
-    add ESP, 4
+    add esp, 4
     ret
-
-invalid_choice:
-    ; Print error message for invalid input
-    push display9
-    push errorMessage
-    call _printf
-    add esp, 8
-    jmp loop_start
-
-exit_program:
-    ; Exit the program
-    push display9
-    push thankYou
-    call _printf
-    add esp, 8
-    push 0
-    call _exit
-
 

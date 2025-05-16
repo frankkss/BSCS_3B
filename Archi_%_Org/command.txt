@@ -3,3 +3,8 @@ cd directory of asm
 nasm -f win32 file.asm
 gcc file.obj 
 a.exe
+
+In Powershell
+nasm -f win32 test.asm    
+gcc finalProj.obj
+./a.exe
