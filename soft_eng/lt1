@@ -1,0 +1,66 @@
+def clean_word(word):
+    punctuation = '''!()-[]{};:'",<>./?@#$%^&*_~'''
+    return ''.join(char for char in word if char not in punctuation)
+
+def average_word_length(text):
+    words = text.split()
+    total_length = 0
+    word_count = 0
+    for word in words:
+        word = clean_word(word)
+        if word:
+            total_length += len(word)
+            word_count += 1
+    return total_length / word_count if word_count > 0 else 0
+
+def sentence_count(text):
+    sentences = text.split('.')
+    return len([sentence for sentence in sentences if sentence.strip()])
+
+def word_frequency(text):
+    words = text.split()
+    frequency = {}
+    order = []
+    for word in words:
+        word = clean_word(word).lower()
+        if word:
+            if word in frequency:
+                frequency[word] += 1
+            else:
+                frequency[word] = 1
+                order.append(word)
+    return frequency, order
+
+def longest_word(text):
+    words = text.split()
+    longest = ""
+    for word in words:
+        word = clean_word(word)
+        if len(word) > len(longest):
+            longest = word
+    return longest
+
+def main():
+    # 1. Prompt user to input text
+    text = input("Enter a piece of text: ")
+
+    # 2. Calculate word frequency
+    frequency, order = word_frequency(text)
+    print("\nWord frequency:")
+    for word in order:
+        print(f"- {word}: {frequency[word]}")
+
+    # 3. Find the longest word
+    longest = longest_word(text)
+    print(f"\nLongest word: {longest}")
+
+    # 4. Calculate average word length
+    avg_length = average_word_length(text)
+    print(f"Average word length: {avg_length:.2f}")
+
+    # 5. Count the number of sentences
+    num_sentences = sentence_count(text)
+    print(f"Number of sentences: {num_sentences}")
+
+if __name__ == "__main__":
+    main()

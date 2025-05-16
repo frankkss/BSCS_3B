@@ -1,0 +1,136 @@
+def validate_alphabet(alphabet: str) -> None:
+    """Validate alphabet requirements"""
+    if not alphabet or alphabet.isspace():
+        raise ValueError("Alphabet cannot be empty")
+    if len(set(alphabet)) != len(alphabet):
+        raise ValueError("Alphabet must contain unique characters")
+
+def find_invalid_chars(text: str, alphabet: str) -> set:
+    """Find characters in text that are not in alphabet"""
+    return {c for c in text if not c.isspace() and c not in alphabet}
+
+def vigenere_cipher(text: str, key: str, alphabet: str, mode: str = 'encrypt', verbose: bool = True) -> str:
+    """
+    Encrypts/decrypts text using a Vigenere cipher with custom alphabet.
+    
+    Args:
+        text: Input text to process (plaintext or ciphertext)
+        key: Key containing only alphabet characters
+        alphabet: Unique characters defining character order
+        mode: 'encrypt' or 'decrypt' (default: 'encrypt')
+        verbose: Show processing details (default: True)
+
+    Returns:
+        Processed text string
+    """
+    # Validate inputs
+    validate_alphabet(alphabet)
+    
+    # Check for empty text
+    if not text or text.isspace():
+        raise ValueError("Plaintext cannot be empty")
+    
+    # Check for empty key
+    if not key:
+        raise ValueError("Key cannot be empty")
+    
+    # Check for spaces in key
+    if any(c.isspace() for c in key):
+        raise ValueError("Key cannot contain spaces")
+        
+    # Check for invalid characters in both text and key
+    invalid_text_chars = find_invalid_chars(text, alphabet)
+    invalid_key_chars = find_invalid_chars(key, alphabet)
+    
+    # Simple error message construction
+    error_message = []
+    
+    if invalid_text_chars:
+        bad_chars = ', '.join(sorted(invalid_text_chars))
+        suffix = "is" if len(invalid_text_chars) == 1 else "are"
+        error_message.append(f"in plaintext: {bad_chars}\n{suffix} not in alphabet")
+        
+    if invalid_key_chars:
+        bad_chars = ', '.join(sorted(invalid_key_chars))
+        suffix = "is" if len(invalid_key_chars) == 1 else "are"
+        error_message.append(f"in key: {bad_chars}\n{suffix} not in alphabet")
+        
+    # If we found any invalid characters, raise error
+    if error_message:
+        full_error = "Invalid characters!\n" + "\n".join(error_message)
+        raise ValueError(full_error)
+
+    result = []
+    key_index = 0
+    alphabet_length = len(alphabet)
+    key_length = len(key)
+
+    for char in text:
+        if char.isspace():
+            result.append(char)
+            continue
+            
+        key_char = key[key_index % key_length]
+        key_index += 1
+        
+        char_val = alphabet.index(char)
+        key_val = alphabet.index(key_char)
+        
+        if mode == 'decrypt':
+            new_val = (char_val - key_val) % alphabet_length
+        else:
+            new_val = (char_val + key_val) % alphabet_length
+            
+        new_char = alphabet[new_val]
+        
+        # Always show steps for numeric alphabets
+        if verbose or alphabet.isdigit():
+            print(f"{char} ({char_val}) {mode} with {key_char} ({key_val}) -> {new_char} ({new_val})")
+            
+        result.append(new_char)
+
+    return ''.join(result)
+
+# Example usage
+if __name__ == "__main__":
+    try:
+        alphabet = input()
+        mode = input() or 'encrypt'  # Default to 'encrypt' if empty
+        text = input()
+        key = input()
+        verbose_input = input()
+        verbose = True if not verbose_input else verbose_input.lower() == 'true'
+
+        result = vigenere_cipher(text, key, alphabet, mode, verbose)
+        print(f"{mode.capitalize()}ed result: {result}")  # Mode-specific output
+    except ValueError as e:
+        print(f"Error: {e}")
+
+"""
+Sample Input/Output:
+
+Input:
+ABCDEFGHIJKLMNOPQRSTUVWXYZ
+encrypt
+ATTACK AT DAWN
+LEMON
+True
+
+Output:
+
+A (0) encrypt with L (11) -> L (11)
+T (19) encrypt with E (4) -> X (23)
+T (19) encrypt with M (12) -> F (5)
+A (0) encrypt with O (14) -> O (14)
+C (2) encrypt with N (13) -> P (15)
+K (10) encrypt with L (11) -> V (21)
+A (0) encrypt with E (4) -> E (4)
+T (19) encrypt with M (12) -> F (5)
+D (3) encrypt with O (14) -> R (17)
+A (0) encrypt with N (13) -> N (13)
+W (22) encrypt with L (11) -> H (7)
+N (13) encrypt with E (4) -> R (17)
+
+Encrypted result: LXFOPV EF RNHR
+
+"""
